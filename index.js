@@ -38,6 +38,7 @@ app.use(express.json({
   limit: config.max_request
 }))
 app.enable("trust proxy")
+
 const limiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute window
   max: 600, // 60 requests per windowMs
@@ -101,11 +102,14 @@ const handle_query = async (decoded, res) => {
   }
 };
 
-app.post('/q', cors(), limiter, async function(req, res) {
+// app.post('/q', cors(), limiter, async function(req, res) {
+app.post('/q', cors(), async function(req, res) {
   const encoded = req.body
   await handle_query(encoded, res)
 });
-app.get(/^\/q\/(.+)/, cors(), limiter, async function(req, res) {
+
+// app.get(/^\/q\/(.+)/, cors(), limiter, async function(req, res) {
+app.get(/^\/q\/(.+)/, cors(), async function(req, res) {
   const encoded = req.params[0];
   const decoded = JSON.parse(new Buffer(encoded, "base64").toString());
   await handle_query(decoded, res)
