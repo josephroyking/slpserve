@@ -41,6 +41,8 @@ const routeRateLimit = function(req, res, next) {
   // This boolean value is passed from the auth.js middleware.
   const proRateLimits = req.locals.proLimit;
 
+  const now = new Date()
+
   // Pro level rate limits
   if (proRateLimits) {
     // TODO: replace the console.logs with calls to our logging system.
@@ -53,7 +55,7 @@ const routeRateLimit = function(req, res, next) {
         delayMs: 0, // disable delaying - full speed until the max limit is reached
         max: PRO_RPM, // start blocking after this many requests per minute
         handler: function(req, res /*next*/) {
-          //console.log(`pro-tier rate-handler triggered.`)
+          console.log(`pro-tier rate-handler triggered at ${now.toLocaleString()}`)
 
           res.status(429); // https://github.com/Bitcoin-com/rest.bitcoin.com/issues/330
           return res.json({
@@ -75,7 +77,7 @@ const routeRateLimit = function(req, res, next) {
         delayMs: 0, // disable delaying - full speed until the max limit is reached
         max: maxRequests, // start blocking after maxRequests
         handler: function(req, res /*next*/) {
-          //console.log(`freemium rate-handler triggered.`)
+          console.log(`freemium rate-handler triggered @ ${now.toLocaleString()}`)
 
           res.status(429); // https://github.com/Bitcoin-com/rest.bitcoin.com/issues/330
           return res.json({
